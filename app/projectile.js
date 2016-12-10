@@ -2,15 +2,14 @@
 Projectile.id = 0;
 Projectile.instances = [];
 
-Projectile.prototype = new Entity(true);
 Projectile.prototype.constructor = Projectile;
 
 
 function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, team, color, uniqueID) {
     if(!color) { color = 1; }
-    Entity.call(this);
+
     this.team = team;
-    this.id = Projectile.id;
+    this.id = "p"+Projectile.id;
     //console.log(this.id);
     Projectile.id++
     this.startTime = Date.now();
@@ -25,12 +24,14 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
     this.radius = 1;
     this.softRadius = 10;
     this.owner = owner;
-    this.image = gn.images.get('laser'+color);
+    this.image = gn.images.get('bullet');
     this.color = color;
     this.width = this.image.width;
     this.height = this.image.height;
     this.uniqueID = this.uniqueID;
     this.type = 'Projectile';
+
+    entities.add(this);
 
     this.move = function() {
         if(this.flight_time && this.flight_time <= 0) {
@@ -39,7 +40,7 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
         if(this.checkCollision()) {
             this.delete();
         } else {
-            this.checkEnvironment();
+            //this.checkEnvironment();
         }
         if(this.collide) {
             if(this.collide.type=='hard') {
@@ -92,13 +93,21 @@ Projectile.moveAll = function() {
 }
 
 Projectile.prototype.delete = function() {
-    Entity.prototype.delete.call(this);
+//    Entity.prototype.delete.call(this);
+    entities.remove(this.id);
     for(var i in Projectile.instances) {
         if(Projectile.instances[i].id == this.id) {
             Projectile.instances.splice(i, 1);
             break;
         }
     }
+}
+
+Projectile.prototype.checkCollision = function() {
+    var tileID = map.getTile(this.x-(this.image.width/2), this.y-(this.image.height/2));
+   if(!tile.get(tileID).passable) {
+       this.delete();
+   }
 }
 
 Projectile.prototype.checkEnvironment = function() {

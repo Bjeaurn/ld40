@@ -2,7 +2,7 @@ tile = {};
 
 tile.tiles = [
     {name: "black", passable: true},
-    {name: "tile", passable: false },
+    {name: "tile", passable: true },
     {name: "horizontal_wall", passable: false },
     {name: "vertical_wall", passable: false },
     {name: "tl_corner", passable: false },

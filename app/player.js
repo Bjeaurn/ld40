@@ -31,25 +31,44 @@ var Player = function() {
 
       self.velocity = self.speed * gn.deltaModifier;
 
+      var tileID = map.getTile(Math.round(self.x-(self.image.width/2)), Math.round(self.y-(self.image.height/2)));
+      if(!tile.get(tileID).passable) {
+          self.collided = true
+      } else {
+          self.collided = false;
+      }
+
       if(gn.keyboard.pressed[gn.keyboard.getValue('left')] || gn.keyboard.pressed[gn.keyboard.getValue('a')]) {
+        if(self.collided) {
+            self.x += self.velocity + 1;
+        }
         self.x -= self.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('up')] || gn.keyboard.pressed[gn.keyboard.getValue('w')]) {
+        if(self.collided) {
+            self.y += self.velocity + 1;
+        }
         self.y -= self.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('right')] || gn.keyboard.pressed[gn.keyboard.getValue('d')]) {
+        if(self.collided) {
+            self.x -= self.velocity + 1;
+        }
         self.x += self.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('down')] || gn.keyboard.pressed[gn.keyboard.getValue('s')]) {
+        if(self.collided) {
+            self.y -= self.velocity * 2;
+        }
         self.y += self.velocity;
       }
     }
 
     self.attack = function() {
-        console.log('shoot it!');
+        new Projectile(self.x, self.y, gn.mouse.x, gn.mouse.y, 1000, 1000, 10, self.id, 0, 0, 1);
     }
 
     return self;

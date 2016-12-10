@@ -11,6 +11,7 @@ gn.load = function() {
     gn.images.store('tr_corner', 'tile_110.png');
     gn.images.store('bl_corner', 'tile_136.png');
     gn.images.store('br_corner', 'tile_137.png');
+    gn.images.store('bullet', 'bullet.png');
     // ### LOAD ALL IMAGES ### //
     /*gn.images.store('water', 'rpg/water.png');
     gn.images.store('grass', 'rpg/grass.png');

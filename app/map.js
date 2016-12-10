@@ -34,3 +34,22 @@ map.draw = function(data) {
         }
     }
 }
+
+map.getTile = function(x, y) {
+    if(map.data) {
+        return (map.data[ Math.round(y / gn.TILESIZE) ] && map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ]) ? map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ] : 0;
+    }
+}
+
+map.getRange = function(x, y, range) {
+    var arr = [];
+    if(map.data) {
+        for(j=y-range; j<y+range; j++) {
+            for(i=x-range; i<x+range; i++) {
+                arr.push( ( map.data[j] && map.data[j][i] ) ? map.data[j][i] : 0);
+            }
+        }
+        return arr;
+    }
+    console.error('No map data');
+}
