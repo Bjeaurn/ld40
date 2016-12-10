@@ -48,5 +48,9 @@ var Player = function() {
       }
     }
 
+    self.attack = function() {
+        console.log('shoot it!');
+    }
+
     return self;
 }

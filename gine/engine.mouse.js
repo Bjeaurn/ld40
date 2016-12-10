@@ -35,9 +35,9 @@ gn.canvas.addEventListener('mousedown', function(evt) {
     }   */
 }, false);
 
-//gn.canvas.addEventListener('mousemove', function(evt) {
-//    gn.mouse.getMousePosition(evt);
-//});
+gn.canvas.addEventListener('mousemove', function(evt) {
+    gn.mouse.getMousePosition(evt);
+});
 
 gn.canvas.addEventListener('mouseup', function(evt) {
     /*if(evt.which==1) {

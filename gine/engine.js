@@ -5,7 +5,7 @@
 
 var gn = {};
 
-gn.TILESIZE = 16;
+gn.TILESIZE = 64;
 gn.MAXFPS = 60;
 gn.debug = false; // DEBUGGING OFF DEFAULT, HIT 'r'
 gn.startTime = gn.tickStart = Date.now();
