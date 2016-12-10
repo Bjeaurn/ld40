@@ -16,17 +16,15 @@ var Player = function() {
       if(self.image && self.x && self.y) {
         gn.handle.save();
         gn.handle.translate(self.x, self.y);
-        gn.handle.rotate((self.direction - 90) * TO_RADIANS);
+        gn.handle.rotate(self.direction * TO_RADIANS);
         gn.handle.draw(self.image, -(self.image.width/2), -(self.image.height/2));
         gn.handle.restore();
       }
     }
 
     self.setDirection = function() {
-      var diff = {};
-      diff.x = gn.mouse.x - self.x;
-      diff.y = gn.mouse.y - self.y;
-      console.log(diff);
+        var result = Math.atan2(self.y - gn.mouse.y, self.x - gn.mouse.x);
+        self.direction = Math.round(result * 180 / Math.PI) + 180;
     }
 
     self.move = function() {

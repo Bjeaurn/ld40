@@ -5,12 +5,12 @@ gn.mouse.y = 0;
 
 gn.mouse.getMousePosition = function(evt) {
     // return relative mouse position
-    var mouseX = Math.round((evt.clientX - gn.canvas.offsetLeft) / gn.canvas.scaleX);
-    var mouseY = Math.round((evt.clientY - gn.canvas.offsetTop + window.pageYOffset) / gn.canvas.scaleY);
-    //console.log(mouseX+':'+mouseY);
+    gn.mouse.x = Math.round((evt.clientX - gn.canvas.offsetLeft) / gn.canvas.scaleX);
+    gn.mouse.y = Math.round((evt.clientY - gn.canvas.offsetTop + window.pageYOffset) / gn.canvas.scaleY);
+
     return {
-      x: mouseX,
-      y: mouseY
+      x: gn.mouse.x,
+      y: gn.mouse.y
     };
 };
 
@@ -35,11 +35,9 @@ gn.canvas.addEventListener('mousedown', function(evt) {
     }   */
 }, false);
 
-gn.canvas.addEventListener('mousemove', function(evt) {
-    var tmp = gn.mouse.getMousePosition(evt);
-    gn.mouse.x = tmp.x;
-    gn.mouse.y = tmp.y;
-});
+//gn.canvas.addEventListener('mousemove', function(evt) {
+//    gn.mouse.getMousePosition(evt);
+//});
 
 gn.canvas.addEventListener('mouseup', function(evt) {
     /*if(evt.which==1) {

@@ -17,6 +17,7 @@ map.data = [ [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
 
 scene.draw = function() {
     //map.draw();
+    //player.setDirection()
     entities.drawAll();
     if(gn.hud) {
 	    gn.hud.draw();
@@ -32,5 +33,4 @@ scene.tick = function () {
 scene.logic = function() {
     // Scene specific stuff.
     obj = gn.viewport.getTile(player.x, player.y);
-    player.setDirection()
 }

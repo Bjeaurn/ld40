@@ -52,7 +52,6 @@ gn.draw = function() {
     gn.currentFps = parseInt(frameCount / seconds, 10);
     gn.canvas.clear();
     // ### DRAW ALL GAME ENTITIES ###
-
     gn.scene.draw();
 
     if(gn.mouse.isClicked) {
