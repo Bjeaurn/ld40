@@ -1,5 +1,5 @@
 
-var TO_RADIANS = Math.PI/180;
+var TO_RADIANS = Math.PI / 180;
 
 var Player = function() {
     var self = {};
