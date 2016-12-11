@@ -9,6 +9,17 @@ gn.hud.draw = function() {
         var obj = gn.viewport.getTile(player.x, player.y);
         gn.handle.text(obj.x+','+obj.y,gn.canvas.ow-150, 16);
     }
+    var health = gn.images.get('health');
+    var width = Math.round((player.health / 100) * health.width);
+
+    gn.handle.globalAlpha = 0.5;
+
+    gn.handle.drawImage(health, 0, 0, width, health.height, player.x - 64, player.y - 40, width, health.height);
+
+    gn.handle.globalAlpha = 1;
+
+    gn.handle.text(player.health, (gn.canvas.ow/2), (gn.canvas.oh - 8));
+
     /*if(player.currentLevel==10 && player.maxLevel==10) {
         red = gn.hud.genColor(red);
         green = gn.hud.genColor(green);

@@ -10,6 +10,7 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
 
     this.team = team;
     this.id = "p"+Projectile.id;
+    Projectile.id++;
     //console.log(this.id);
     Projectile.id++
     this.startTime = Date.now();
@@ -37,11 +38,7 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
         if(this.flight_time && this.flight_time <= 0) {
             this.delete();
         }
-        if(this.checkCollision()) {
-            this.delete();
-        } else {
-            //this.checkEnvironment();
-        }
+        this.checkCollision();
         if(this.collide) {
             if(this.collide.type=='hard') {
                 sendHit(this.uniqueID, this.collide.with);
@@ -105,9 +102,17 @@ Projectile.prototype.delete = function() {
 
 Projectile.prototype.checkCollision = function() {
     var tileID = map.getTile(this.x-(this.image.width/2), this.y-(this.image.height/2));
-   if(!tile.get(tileID).passable) {
+    if(!tile.get(tileID).passable) {
        this.delete();
-   }
+    }
+    var enemy;
+    for(var i in Enemy.instances) {
+        enemy = Enemy.instances[i];
+        if(Math.abs(enemy.x - this.x) < (gn.TILESIZE / 2) && Math.abs(enemy.y - this.y) < (gn.TILESIZE/2)) {
+            enemy.hurt(this.damage);
+            this.delete();
+        }
+    }
 }
 
 Projectile.prototype.checkEnvironment = function() {
@@ -140,5 +145,5 @@ Projectile.prototype.checkEnvironment = function() {
 }
 
 Projectile.prototype.draw = function() {
-    gn.handle.draw(this.image, this.x-gn.viewport.x, this.y-gn.viewport.y);
+    gn.handle.draw(this.image, this.x-(this.image.width/2), this.y-(this.image.height/2));
 }

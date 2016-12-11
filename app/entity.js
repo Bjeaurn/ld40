@@ -12,8 +12,6 @@ entities.remove = function(id) {
     for(var i in entities.array) {
         obj = entities.array[i];
         if(obj.id && obj.id == id) {
-            console.log('Deleting '+i);
-            //delete entities.array[i];
             entities.array.splice(i, 1);
             return true;
         }
@@ -31,6 +29,37 @@ entities.drawAll = function() {
     for(var i in entities.array) {
         obj = entities.array[i];
         obj.draw();
+    }
+}
+
+entities.checkCollision = function() {
+    var obj, test;
+    var arr = [];
+    for(var i in entities.array) {
+        obj = entities.array[i];
+        entities.setBounds(obj);
+        for(var j in entities.array) {
+            test = entities.array[j];
+            if(test.x && test.y && test.image && !entities.bounds) {
+                entities.setBounds(test);
+            }
+            if(obj.bounds.br > test.bounds.tl || obj.bounds.tl < test.bounds.br || obj.bounds.tr > test.bounds.bl || obj.bounds.bl > test.bounds.tr) {
+                arr.push(test);
+            }
+        }
+    }
+    //console.log(arr);
+}
+
+entities.setBounds = function(obj) {
+    if(!obj.bounds) {
+        if(obj.image && obj.x && obj.y) {
+            obj.bounds = {}
+            obj.bounds.tl = obj.x;
+            obj.bounds.tr = obj.x + obj.image.width;
+            obj.bounds.bl = obj.x + obj.y;
+            obj.bounds.br = obj.bounds.tr + obj.y;
+        }
     }
 }
 

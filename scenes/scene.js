@@ -10,6 +10,13 @@ map.data = [ [4,2,2,2,2,2,2,2,2,2,2,5],
              [6,2,2,2,2,2,2,2,2,2,2,7]
            ];
 
+new Enemy()
+new Enemy()
+new Enemy()
+new Enemy()
+new Enemy()
+new Enemy()
+
 scene.draw = function() {
     map.draw(map.data);
     player.setDirection()
@@ -19,10 +26,12 @@ scene.draw = function() {
     }
 }
 
-
 scene.tick = function () {
     player.move();
     Projectile.moveAll();
+    Enemy.moveAll();
+    //Enemy.updateAll();
+//    entities.checkCollision();
     scene.logic();
 }
 
