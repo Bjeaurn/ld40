@@ -9,6 +9,7 @@ tile.tiles = [
     {name: "tr_corner", passable: false },
     {name: "bl_corner", passable: false },
     {name: "br_corner", passable: false },
+    {name: "box", passable: false }
 ]
 
 tile.draw = function(x, y, tileID) {

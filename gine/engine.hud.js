@@ -20,6 +20,28 @@ gn.hud.draw = function() {
 
     gn.handle.text(player.health, (gn.canvas.ow/2), (gn.canvas.oh - 8));
 
+    if(player.dead) {
+        gn.handle.font = '24px Helvetica';
+
+        gn.handle.text('YOU DIED!', (gn.canvas.ow/2)-40, (gn.canvas.oh / 2) - 32);
+        gn.handle.text('You scored '+player.score+' points', (gn.canvas.ow/2)-90, (gn.canvas.oh / 2));
+
+        gn.handle.font = '16px Helvetica';
+        gn.handle.text('Send a screenshot to @Bjeaurn !', (gn.canvas.ow/2)-90, (gn.canvas.oh / 2) + 24);
+
+        gn.handle.font = gn.handle.defaultFont;
+
+    }
+
+    var bullet = gn.images.get('bullet_case');
+    if(player.bullets > 0) {
+        for(var i = 0; i<player.bullets; i++) {
+            gn.handle.draw(bullet, gn.canvas.ow - 16 - (9 * i), gn.canvas.oh - 24);
+        }
+    } else {
+        gn.handle.text('Press R to reload!', gn.canvas.ow - 100, gn.canvas.oh - 8);
+    }
+
     /*if(player.currentLevel==10 && player.maxLevel==10) {
         red = gn.hud.genColor(red);
         green = gn.hud.genColor(green);

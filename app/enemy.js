@@ -3,24 +3,75 @@ Enemy.prototype.constructor = Enemy;
 
 Enemy.instances = [];
 
+Enemy.soundPain = [ new Audio("sound/zombie-1.wav"), new Audio("sound/zombie-2.wav"), new Audio("sound/zombie-3.wav"), new Audio("sound/zombie-5.wav"), new Audio("sound/zombie-1.wav"), new Audio("sound/zombie-2.wav"), new Audio("sound/zombie-3.wav"), new Audio("sound/zombie-5.wav") ];
+
 Enemy.moveAll = function() {
     for(var i in Enemy.instances) {
         Enemy.instances[i].move();
     }
 }
 
+Enemy.spawns = [
+    { x: -64, y: -64, open: false},
+    { x: -64, y: gn.canvas.oh-64, open: false},
+    { x: gn.canvas.ow+64, y: -64, open: false },
+    { x: gn.canvas.ow+64, y: gn.canvas.oh + 64, open: true }
+]
+
+Enemy.openSpawn = function(id) {
+    console.log('opening ID!'+ id);
+    Enemy.spawns[id - 1].open = true;
+    console.log(Enemy.spawns);
+}
+
+
+Enemy.getRandomSpawn = function() {
+    var start = Math.floor(Math.random() * Enemy.spawns.length);
+    for(var i=start; i<Enemy.spawns.length; i++) {
+        if(Enemy.spawns[i].open) {
+            return Enemy.spawns[i];
+        }
+        if(i>Enemy.spawns.length) i = 0;
+    }
+}
+
+Enemy.wave = 0;
+
+Enemy.checkWave = function() {
+    if(Enemy.instances.length===0) {
+        Enemy.wave++;
+        player.score += Enemy.wave;
+
+        if(Box.instances.length>0) {
+            BoxGroup.destroyRandom();
+        }
+
+        for(var i=0; i<((Enemy.wave*Enemy.wave)+3); i++) {
+            new Enemy();
+        }
+    }
+}
+
 function Enemy() {
     Enemy.id++;
     this.id = "e"+Enemy.id;
-    this.x = Math.random() * 700;
-    this.y = Math.random() * 400;
+    this.spawn = Enemy.getRandomSpawn();
+    this.x = Math.round(Math.random() * 64) + this.spawn.x;
+    this.y = Math.round(Math.random() * 64) + this.spawn.y;
     this.image = gn.images.get('zombie');
     this.direction = 0;
-    this.speed = 50;
+    this.speed = Math.floor(Math.random() * 20) + 50;
+    this.maxSpeed = Math.floor(Math.random() * 30) + 100;
+
+    this.special = Math.floor(Math.random() * 10);
+    if(this.special==0) {
+        this.speed = this.speed * 2;
+        this.maxSpeed = this.maxSpeed * 2;
+    }
     this.damage = 10;
     this.health = this.maxHealth = 30;
     this.attackDelay = false;
-    this.attackDelayTime = 600;
+    this.attackDelayTime = Math.floor(Math.random() * 200) + 600;
     entities.add(this);
 
     Enemy.instances.push(this);
@@ -48,6 +99,13 @@ function Enemy() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
 
+        var dX = Math.round(Math.abs(player.x - this.x));
+        var dY = Math.round(Math.abs(player.y - this.y));
+        if(dX < 100 && dY < 100) {
+            this.speed += 1;
+            if(this.speed > this.maxSpeed) this.speed = this.maxSpeed;
+        }
+
         this.attack();
     }
 
@@ -63,7 +121,6 @@ function Enemy() {
 
         if(this.health < this.maxHealth) {
             var health = gn.images.get('health_zombie');
-            console.log(health);
             var width = Math.round((this.health / this.maxHealth) * health.width);
 
             gn.handle.globalAlpha = 0.4;
@@ -74,6 +131,7 @@ function Enemy() {
 
     this.hurt = function(damage) {
         this.health -= damage;
+        Enemy.soundPain[Math.floor(Math.random() * Enemy.soundPain.length)].play();
         if(this.health <= 0) {
             this.die();
         }
@@ -95,8 +153,10 @@ function Enemy() {
         for(var i in Enemy.instances) {
             obj = Enemy.instances[i];
             if(obj.id == this.id) {
+                player.score += 1;
                 Enemy.instances.splice(i, 1);
                 entities.remove(this.id);
+                Enemy.checkWave();
                 return;
             }
         }

@@ -4,6 +4,7 @@ gn.load = function() {
 
     gn.images.store('black', 'tile_01.png');
     gn.images.store('player_gun', 'survivor1_gun.png');
+    gn.images.store('player_reload', 'survivor1_reload.png');
     gn.images.store('zombie', 'zoimbie1_hold.png');
     gn.images.store('tile', 'tile_12.png');
     gn.images.store('horizontal_wall', 'tile_111.png');
@@ -16,6 +17,8 @@ gn.load = function() {
     gn.images.store('health', 'health.png');
     gn.images.store('blood', 'blood.png');
     gn.images.store('health_zombie', 'health_zombie.png');
+    gn.images.store('box', 'tile_129.png');
+    gn.images.store('bullet_case', 'bullet_case.png');
 
     // ### INITIALIZE VARIABLES ### //
     player = Player();

@@ -1,109 +1,154 @@
 
+
 var TO_RADIANS = Math.PI / 180;
 
-var Player = function() {
-    var self = {};
-    self = entity();
+Player.prototype.constructor = Player;
 
-    self.x = gn.canvas.ow / 2;
-    self.y = gn.canvas.oh / 2;
-    self.speed = 70;
-    self.velocity = 0;
-    self.setImage(gn.images.get('player_gun'));
-    self.direction = 0;
-    self.health = 100;
-    self.isHurt = false;
-    self.hurtAlpha = 0.8;
-    self.dead = false;
-    self.draw = function() {
-        if(self.image && self.x && self.y) {
+Player.soundreload = new Audio("sound/outofammo.wav");
+Player.soundNoAmmo = new Audio("sound/weapload.wav");
+
+Player.soundDie = new Audio("sound/die1.wav");
+Player.soundPain = [new Audio("sound/pain1.wav"), new Audio("sound/pain2.wav") ];
+
+function Player() {
+    this.x = gn.canvas.ow / 2;
+    this.y = gn.canvas.oh / 2;
+    this.speed = 70;
+    this.velocity = 0;
+    this.image = gn.images.get('player_gun');
+    this.reloadImage = gn.images.get('player_reload');
+    this.direction = 0;
+    this.health = 100;
+    this.isHurt = false;
+    this.hurtAlpha = 0.8;
+    this.dead = false;
+    this.attackSpeed = 200;
+    this.attackDelayed = false;
+    this.score = 0;
+
+    this.bullets = this.maxBullets = 12;
+
+    this.draw = function() {
+        if(this.image && this.x && this.y) {
+            if(this.reloading) {
+                this.curImage = this.reloadImage;
+            } else {
+                this.curImage = this.image;
+            }
             gn.handle.save();
-            gn.handle.translate(self.x, self.y);
-            gn.handle.rotate(self.direction * TO_RADIANS);
-            gn.handle.draw(self.image, -(self.image.width/2), -(self.image.height/2));
+            gn.handle.translate(this.x, this.y);
+            gn.handle.rotate(this.direction * TO_RADIANS);
+            gn.handle.draw(this.curImage, -(this.image.width/2), -(this.image.height/2));
             gn.handle.restore();
         }
 
-        if(self.isHurt || self.dead) {
-            self.hurtAlpha -= gn.deltaModifier
-            gn.handle.globalAlpha = self.hurtAlpha;
+        if(this.isHurt || this.dead) {
+            this.hurtAlpha -= gn.deltaModifier
+            gn.handle.globalAlpha = this.hurtAlpha;
             gn.handle.draw(gn.images.get('blood'), 0, 0);
-            if(gn.now - self.isHurt > 400) {
-                self.isHurt = false;
-                self.hurtAlpha = 0.8;
+            if(gn.now - this.isHurt > 400) {
+                this.isHurt = false;
+                this.hurtAlpha = 0.8;
             }
         }
         gn.handle.globalAlpha = 1;
 
     }
 
-    self.setDirection = function() {
-        if(self.dead) return;
-        var result = Math.atan2(self.y - gn.mouse.y, self.x - gn.mouse.x);
-        self.direction = Math.round(result * 180 / Math.PI) + 180;
+    this.setDirection = function() {
+        if(this.dead) return;
+        var result = Math.atan2(this.y - gn.mouse.y, this.x - gn.mouse.x);
+        this.direction = Math.round(result * 180 / Math.PI) + 180;
     }
 
-    self.move = function() {
-        if(self.dead) {
+    this.move = function() {
+        if(this.dead) {
             return;
         }
-        if(self.health <= 0) self.die();
+        if(this.health <= 0) this.die();
 
-      self.velocity = self.speed * gn.deltaModifier;
+        if(this.attackDelayed) {
+            if(gn.now - this.attackDelayed > this.attackSpeed)
+                this.attackDelayed = false;
+        }
 
-      var tileID = map.getTile(Math.round(self.x-(self.image.width/2)), Math.round(self.y-(self.image.height/2)));
+      this.velocity = this.speed * gn.deltaModifier;
+
+      var tileID = map.getTile(Math.round(this.x-(this.image.width/2)), Math.round(this.y-(this.image.height/2)));
       if(!tile.get(tileID).passable) {
-          self.collided = true
+          this.collided = true
       } else {
-          self.collided = false;
+          this.collided = false;
       }
 
-      if(gn.keyboard.pressed[gn.keyboard.getValue('left')] || gn.keyboard.pressed[gn.keyboard.getValue('a')]) {
-        if(self.collided) {
-            self.x += self.velocity + 1;
+        if(this.reloading && gn.now - this.reloading > 1000) {
+            this.bullets = this.maxBullets;
+            this.reloading = false;
+            Player.soundNoAmmo.play();
         }
-        self.x -= self.velocity;
+
+        if(!this.reloading && gn.keyboard.pressed[gn.keyboard.getValue('r')]) {
+            this.reloading = gn.now;
+            Player.soundreload.play();
+        }
+
+      if(gn.keyboard.pressed[gn.keyboard.getValue('left')] || gn.keyboard.pressed[gn.keyboard.getValue('a')]) {
+        if(this.collided) {
+            this.x += this.velocity + 1;
+        }
+        this.x -= this.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('up')] || gn.keyboard.pressed[gn.keyboard.getValue('w')]) {
-        if(self.collided) {
-            self.y += self.velocity + 1;
+        if(this.collided) {
+            this.y += this.velocity + 1;
         }
-        self.y -= self.velocity;
+        this.y -= this.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('right')] || gn.keyboard.pressed[gn.keyboard.getValue('d')]) {
-        if(self.collided) {
-            self.x -= self.velocity + 1;
+        if(this.collided) {
+            this.x -= this.velocity + 1;
         }
-        self.x += self.velocity;
+        this.x += this.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('down')] || gn.keyboard.pressed[gn.keyboard.getValue('s')]) {
-        if(self.collided) {
-            self.y -= self.velocity * 2;
+        if(this.collided) {
+            this.y -= this.velocity * 2;
         }
-        self.y += self.velocity;
+        this.y += this.velocity;
       }
     }
 
-    self.attack = function() {
-        if(self.dead) { return; } else {
-            new Projectile(self.x, self.y, gn.mouse.x, gn.mouse.y, 1000, 1000, 10, self.id, 0, 0, 1);
+    this.attack = function() {
+        if(this.dead) { return; } else {
+            if(!this.attackDelayed) {
+                if(this.bullets > 0) {
+                    this.bullets = this.bullets - 1;
+                    new Projectile(this.x, this.y, gn.mouse.x, gn.mouse.y, 1000, 800, 10, this.id, 0, 0, 1);
+                    this.attackDelayed = gn.now;
+                } else {
+                    Player.soundNoAmmo.play();
+                }
+            }
         }
     }
 
-    self.hurt = function(damage) {
-        if(self.dead) return;
-        self.health -= damage;
-        self.isHurt = gn.now;
+    this.hurt = function(damage) {
+        if(this.dead) return;
+        var rnd = Math.floor(Math.random() * Player.soundPain.length);
+        Player.soundPain[rnd].play();
+        this.health -= damage;
+        this.isHurt = gn.now;
     }
 
-    self.die = function() {
-        self.dead = true;
+    this.die = function() {
+        Player.soundDie.play();
+        this.dead = true;
         console.log('You died bro!');
-
+        console.log('You scored '+this.score+' points!');
     }
 
-    return self;
+    return this;
 }
