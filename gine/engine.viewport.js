@@ -9,9 +9,11 @@ gn.viewport.lastY = gn.viewport.y;
 
 gn.viewport.update = function() {
 
-    gn.viewport.tileX = gn.viewport.x / gn.TILESIZE;
-    gn.viewport.tileY = gn.viewport.y / gn.TILESIZE;
-
+    gn.viewport.tileX = (gn.viewport.x - gn.viewport.centerX) / gn.TILESIZE;
+    gn.viewport.tileY = (gn.viewport.y - gn.viewport.centerY) / gn.TILESIZE;
+    
+    gn.viewport.hx = gn.viewport.x + gn.viewport.centerX;
+    gn.viewport.hy = gn.viewport.y + gn.viewport.centerY;
     /*if(player) {
         gn.viewport.x = (player.x - gn.canvas.width/2);
         gn.viewport.y = (player.y - gn.canvas.height/2);

@@ -1,17 +1,24 @@
 map = {};
 map.data = [];
 
-map.draw = function(data) {
-    if(data && data !== 0) {
+map.draw = function() {
+    if(map.data && map.data !== 0) {
         var mapX = 0;
         var mapY = 0;
         var tileVar;
-        for(j=0; j<gn.screen.tilesY+2; j++) {
-            for(i=0;i<gn.screen.tilesX+2; i++) {
-                tileVar = (map.data[j] && map.data[j][i]) ? map.data[j][i] : 0;
+        for(j=-2; j<gn.screen.tilesY+2; j++) {
+            for(i=-2;i<gn.screen.tilesX+2; i++) {
+
+                //calculate the map location:
+                mapX = i + gn.round(gn.viewport.tileX);
+                mapY = j + gn.round(gn.viewport.tileY);
+                decX = gn.viewport.tileX - gn.round(gn.viewport.tileX);
+                decY = gn.viewport.tileY - gn.round(gn.viewport.tileY);
+
+                tileVar = (map.data[mapY] && map.data[mapY][mapX]) ? map.data[mapY][mapX] : 0;
 
                 if(tile && tile.draw) {
-                    tile.draw(i, j, tileVar);
+                    tile.draw(i-decX, j-decY, tileVar);
                 } else {
                     console.log('We don\'t have a Tile object');
                     return;
@@ -38,6 +45,22 @@ map.draw = function(data) {
 map.getTile = function(x, y) {
     if(map.data) {
         return (map.data[ Math.round(y / gn.TILESIZE) ] && map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ]) ? map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ] : 0;
+    }
+}
+
+map.partial = (gn.TILESIZE/2)
+
+map.getSurrounding = function(x, y) {
+    if(map.data) {
+        return { 
+            left: map.getTile(x - map.partial + 1, y),
+            right: map.getTile(x + map.partial - 1, y),
+            up: map.getTile(x, y - map.partial + 1),
+            down: map.getTile(x, y + map.partial - 1)
+        }
+    } else {
+        throw "No map data!";
+        return {}
     }
 }
 

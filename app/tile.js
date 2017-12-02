@@ -2,14 +2,9 @@ tile = {};
 
 tile.tiles = [
     {name: "black", passable: true},
-    {name: "tile", passable: true },
-    {name: "horizontal_wall", passable: false },
-    {name: "vertical_wall", passable: false },
-    {name: "tl_corner", passable: false },
-    {name: "tr_corner", passable: false },
-    {name: "bl_corner", passable: false },
-    {name: "br_corner", passable: false },
-    {name: "box", passable: false }
+    {name: "wall", passable: false},
+    {name: "tile3", passable: false},
+    {name: "tile4", passable: false},
 ]
 
 tile.draw = function(x, y, tileID) {

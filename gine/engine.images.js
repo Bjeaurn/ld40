@@ -1,7 +1,7 @@
 gn.images = {};
 gn.images.data = [];
 
-gn.images.folder = "images";
+gn.images.folder = "assets/images";
 
 gn.images.store = function(name, imgSrc) {
     var newid = gn.images.data.length;

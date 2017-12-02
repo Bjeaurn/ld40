@@ -3,8 +3,6 @@ Enemy.prototype.constructor = Enemy;
 
 Enemy.instances = [];
 
-Enemy.soundPain = [ new Audio("sound/zombie-1.wav"), new Audio("sound/zombie-2.wav"), new Audio("sound/zombie-3.wav"), new Audio("sound/zombie-5.wav"), new Audio("sound/zombie-1.wav"), new Audio("sound/zombie-2.wav"), new Audio("sound/zombie-3.wav"), new Audio("sound/zombie-5.wav") ];
-
 Enemy.moveAll = function() {
     for(var i in Enemy.instances) {
         Enemy.instances[i].move();
@@ -18,47 +16,12 @@ Enemy.spawns = [
     { x: gn.canvas.ow+64, y: gn.canvas.oh + 64, open: true }
 ]
 
-Enemy.openSpawn = function(id) {
-    console.log('opening ID!'+ id);
-    Enemy.spawns[id - 1].open = true;
-    console.log(Enemy.spawns);
-}
-
-
-Enemy.getRandomSpawn = function() {
-    var start = Math.floor(Math.random() * Enemy.spawns.length);
-    for(var i=start; i<Enemy.spawns.length; i++) {
-        if(Enemy.spawns[i].open) {
-            return Enemy.spawns[i];
-        }
-        if(i>Enemy.spawns.length) i = 0;
-    }
-}
-
-Enemy.wave = 0;
-
-Enemy.checkWave = function() {
-    if(Enemy.instances.length===0) {
-        Enemy.wave++;
-        player.score += Enemy.wave;
-
-        if(Box.instances.length>0) {
-            BoxGroup.destroyRandom();
-        }
-
-        for(var i=0; i<((Enemy.wave*Enemy.wave)+3); i++) {
-            new Enemy();
-        }
-    }
-}
-
 function Enemy() {
     Enemy.id++;
     this.id = "e"+Enemy.id;
     this.spawn = Enemy.getRandomSpawn();
     this.x = Math.round(Math.random() * 64) + this.spawn.x;
     this.y = Math.round(Math.random() * 64) + this.spawn.y;
-    this.image = gn.images.get('zombie');
     this.direction = 0;
     this.speed = Math.floor(Math.random() * 20) + 50;
     this.maxSpeed = Math.floor(Math.random() * 30) + 100;
@@ -120,7 +83,6 @@ function Enemy() {
         }
 
         if(this.health < this.maxHealth) {
-            var health = gn.images.get('health_zombie');
             var width = Math.round((this.health / this.maxHealth) * health.width);
 
             gn.handle.globalAlpha = 0.4;
@@ -131,7 +93,6 @@ function Enemy() {
 
     this.hurt = function(damage) {
         this.health -= damage;
-        Enemy.soundPain[Math.floor(Math.random() * Enemy.soundPain.length)].play();
         if(this.health <= 0) {
             this.die();
         }

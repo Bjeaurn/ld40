@@ -1,19 +1,11 @@
 
-Projectile.id = 0;
 Projectile.instances = [];
 
 Projectile.prototype.constructor = Projectile;
 
-Projectile.sound = [ new Audio("sound/pistol.wav"), new Audio("sound/pistol.wav"), new Audio("sound/pistol.wav"), new Audio("sound/pistol.wav"), new Audio("sound/pistol.wav"), new Audio("sound/pistol.wav") ];
-Projectile.soundLast = 0;
-
 function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, team, color, uniqueID) {
     if(!color) { color = 1; }
     this.team = team;
-    this.id = "p"+Projectile.id;
-    Projectile.id++;
-    //console.log(this.id);
-    Projectile.id++
     this.startTime = Date.now();
     this.x = this.startX = startX;
     this.y = this.startY = startY;
@@ -33,11 +25,7 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
     this.uniqueID = this.uniqueID;
     this.type = 'Projectile';
 
-    entities.add(this);
-
-    Projectile.sound[Projectile.soundLast].play();
-    Projectile.soundLast++;
-    if(Projectile.soundLast >= Projectile.sound.length) Projectile.soundLast = 0;
+    this.id = entities.add(this);
 
     this.move = function() {
         if(this.flight_time && this.flight_time <= 0) {
@@ -46,7 +34,7 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
         this.checkCollision();
         if(this.collide) {
             if(this.collide.type=='hard') {
-                sendHit(this.uniqueID, this.collide.with);
+                // sendHit(this.uniqueID, this.collide.with);
                 //this.collide.with.hurt(this.damage);
                 this.delete();
             }
@@ -119,14 +107,14 @@ Projectile.prototype.checkCollision = function() {
         }
     }
 
-    var box;
-    for(var i in Box.instances) {
-        box = Box.instances[i];
-        if(Math.abs(box.x - this.x) < box.boxImage.width && Math.abs(box.y - this.y) < box.boxImage.height) {
-            box.hurt(this.damage);
-            this.delete();
-        }
-    }
+    // var box;
+    // for(var i in Box.instances) {
+    //     box = Box.instances[i];
+    //     if(Math.abs(box.x - this.x) < box.boxImage.width && Math.abs(box.y - this.y) < box.boxImage.height) {
+    //         box.hurt(this.damage);
+    //         this.delete();
+    //     }
+    // }
 }
 
 Projectile.prototype.checkEnvironment = function() {

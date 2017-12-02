@@ -5,6 +5,7 @@ entities.array = [];
 
 entities.add = function(object) {
     entities.array.push(object);
+    return entities.array.length;
 }
 
 entities.remove = function(id) {
@@ -29,6 +30,15 @@ entities.drawAll = function() {
     for(var i in entities.array) {
         obj = entities.array[i];
         obj.draw();
+    }
+}
+
+entities.updateAll = function() {
+    var obj;
+    for(var i in entities.array) {
+        obj = entities.array[i];
+        if(obj.update)
+            obj.update();
     }
 }
 
@@ -107,6 +117,10 @@ entity = function() {
 
     entities.add(self);
     return self;
+}
+
+entity.isTouching = function(x, y) {
+    return gn.round(gn.viewport.x / gn.TILESIZE) === gn.round(x / gn.TILESIZE) && gn.round(gn.viewport.y / gn.TILESIZE) === gn.round(y / gn.TILESIZE)
 }
 
 /*
