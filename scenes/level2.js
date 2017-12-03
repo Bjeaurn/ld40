@@ -9,7 +9,7 @@ scene.targetCrystals = 6;
 gn.viewport.x = player.x;
 gn.viewport.y = player.y;
 
-map.default = [0];
+map.default = 0;
 map.data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0],
             [0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
@@ -56,20 +56,23 @@ var crystals = [
 ];
 scene.addPotion = function() {
     new Banner('Oh wow! That drink made you a lot faster!', 200);
-    player.speed += 25;
+    player.drinkPotion();
 }
 
 new Potion(11,5);
-
+new Potion(18,5);
 scene.coinsArr = [];
 scene.seenCoin = false;
 
 scene.addCoin = function() {
-    this.coins++;
+    player.coins++;
 }
 
 scene.addCrystal = function() {
-    this.crystals++;
+    scene.crystals++;
+    if(scene.crystals >= scene.targetCrystals) {
+        portals.forEach(portal => portal.toggle());
+    }
 }
 
 var dropCoin = function(x, y) {
@@ -101,8 +104,8 @@ var dropCrystal = function(x, y) {
 }
 
 new Enemy(610, 698, dropCoin);
-new Enemy(599, 84, dropCoin);
-new Enemy(444, 75, dropCrystal);
+new Enemy(599, 304, dropCoin);
+new Enemy(444, 175, dropCrystal);
 
 var portals = [
     new Portal(04, 2),
@@ -117,8 +120,12 @@ scene.draw = function() {
     map.draw();
     entities.drawAll();
     player.setDirection();
-    player.draw();
-    Banners.drawAll();    
+    player.draw(); 
+    if(player.coins > 0) {
+        gn.handle.text('Coins: '+player.coins, 10, 560, '16px Helvetica', '255,255,255', '1');            
+    }
+    gn.handle.text('Crystals: '+scene.crystals, 10, 580, '16px Helvetica', '255,255,255', '1');    
+    Banners.drawAll();
 }
 
 scene.tick = function () {
@@ -136,8 +143,13 @@ scene.logic = function() {
     if (scene.crystals >= scene.targetCrystals) {
         portals.forEach( portal => {
             if(portal.touchingAPortal()) {
-                gn.scene.load('level3');
+                scene.completeLevel();
             };
         })
     }
+}
+
+scene.completeLevel = function() {
+    portals.forEach(portal => portal.delete());
+    gn.scene.load('level3');
 }

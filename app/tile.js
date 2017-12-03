@@ -3,8 +3,8 @@ tile = {};
 tile.tiles = [
     {name: "black", passable: true},
     {name: "wall", passable: false},
-    {name: "tile3", passable: false},
-    {name: "tile4", passable: false},
+    {name: "wall-wizard", passable: false},
+    {name: "grass", passable: true},
 ]
 
 tile.draw = function(x, y, tileID) {

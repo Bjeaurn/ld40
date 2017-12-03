@@ -1,7 +1,9 @@
+player.x = 479;
+player.y = 738
 gn.viewport.x = player.x;
 gn.viewport.y = player.y;
 
-map.default = [0];
+map.default = 0;
 map.data = [[0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -79,6 +81,7 @@ scene.draw = function() {
     entities.drawAll();
     player.setDirection();
     player.draw();
+    gn.handle.text('Crystals: '+scene.crystals, 10, 500, '16px Helvetica', '255,255,255', '1');        
     Banners.drawAll();
 }
 
@@ -97,8 +100,13 @@ scene.logic = function() {
     if (scene.crystals >= scene.targetCrystals) {
         portals.forEach( portal => {
             if(portal.touchingAPortal()) {
-                gn.scene.load('level2');
+                scene.completeLevel();
             };
         })
     }
+}
+
+scene.completeLevel = function() {
+    portals.forEach(portal => portal.delete());
+    gn.scene.load('level2');
 }

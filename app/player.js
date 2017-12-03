@@ -5,18 +5,31 @@ var TO_RADIANS = Math.PI / 180;
 Player.prototype.constructor = Player;
 
 function Player() {
-    this.x = 479;
-    this.y = 738;
+    this.x = 0;
+    this.y = 0;
     this.speed = 95;
     this.velocity = 0;
     this.image = gn.images.get('player');
     this.direction = 0;
     this.health = 100;
     this.isHurt = false;
+    this.potionsUsed = 0;
+    this.potionEffect = 0;
+    this.coins = 0;
+    this.canMove = true;
     
     this.math = {
        halfX: this.image.width/2,
        halfY: this.image.height/2
+    }
+
+    this.drinkPotion = function() {
+        this.speed += 25;
+        this.potionsUsed++;
+        if(this.potionsUsed >= 3) {
+            new Banner("Oh no! The potions have a weird side effect!", 200);
+            this.potionEffect = 50 * this.potionsUsed;
+        }
     }
 
     this.draw = function() {
@@ -32,8 +45,8 @@ function Player() {
             gn.handle.draw(this.curImage, -(this.math.halfX), -(this.math.halfY));
             gn.handle.restore();
 
-            gn.handle.text('X: '+gn.round(this.x, 2)+', Y: '+gn.round(this.y,2), 5, 20);
-            gn.handle.text('tX: '+gn.round(this.x/gn.TILESIZE)+', Y: '+gn.round(this.y/gn.TILESIZE), 5, 40);
+            // gn.handle.text('X: '+gn.round(this.x, 2)+', Y: '+gn.round(this.y,2), 5, 20);
+            // gn.handle.text('tX: '+gn.round(this.x/gn.TILESIZE)+', Y: '+gn.round(this.y/gn.TILESIZE), 5, 40);
         
         }
         gn.handle.globalAlpha = 1;
@@ -47,7 +60,7 @@ function Player() {
     }
 
     this.move = function() {
-        if(this.dead) {
+        if(this.dead || !this.canMove) {
             return;
         }
         if(this.health <= 0) this.die();
@@ -58,6 +71,11 @@ function Player() {
         }
 
       this.velocity = (this.speed * gn.deltaModifier)  - ((scene.crystals * scene.crystals) * 0.035);
+
+      if(this.potionEffect > 0) { 
+          this.velocity = -this.velocity;
+          this.potionEffect--;
+      }
 
       var tileID = map.getTile(Math.round(this.x-(this.image.width/2)), Math.round(this.y-(this.image.height/2)));
       var surrounding = map.getSurrounding(this.x, this.y);
@@ -103,8 +121,8 @@ function Player() {
 
     this.die = function() {
         this.dead = true;
-        console.log('You died bro!');
-        console.log('You scored '+this.score+' points!');
+        new Banner('You died! :-(. Try again!', 300);
+        setTimeout(gn.scene.load('level1'), 3000);
     }
 
     return this;

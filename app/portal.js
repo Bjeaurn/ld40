@@ -22,7 +22,7 @@ function Portal(tileX, tileY) {
 
     this.touchingAPortal = function() {
         if(this.isTouching()) {
-            this.delete();
+            // this.delete();
             return true;
         }
         return false;

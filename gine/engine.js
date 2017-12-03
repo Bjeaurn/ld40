@@ -38,7 +38,7 @@ gn.tick = function() {
 	gn.ticks++;
 	gn.draws = 0;
     var delta = gn.now - gn.then;
-    // if(delta > 10) { delta = 0; }
+    if(delta > 50) { delta = 0; console.warn('DeltaTime is too big, preventing...') }
     gn.deltaModifier = delta / 1000;
 
     // ###  Game logic updates per tick. ###

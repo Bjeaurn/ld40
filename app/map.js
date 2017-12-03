@@ -2,6 +2,7 @@ map = {};
 map.data = [];
 
 map.draw = function() {
+    if(!map.default) map.default = 0;    
     if(map.data && map.data !== 0) {
         var mapX = 0;
         var mapY = 0;
@@ -14,9 +15,8 @@ map.draw = function() {
                 mapY = j + gn.round(gn.viewport.tileY);
                 decX = gn.viewport.tileX - gn.round(gn.viewport.tileX);
                 decY = gn.viewport.tileY - gn.round(gn.viewport.tileY);
-
-                tileVar = (map.data[mapY] && map.data[mapY][mapX]) ? map.data[mapY][mapX] : 0;
-
+                
+                tileVar = (map.data[mapY] && map.data[mapY][mapX] > -1) ? map.data[mapY][mapX] : map.default;
                 if(tile && tile.draw) {
                     tile.draw(i-decX, j-decY, tileVar);
                 } else {
@@ -46,7 +46,7 @@ map.logged = false;
 
 map.getTile = function(x, y) {
     if(map.data) {
-        return (map.data[ Math.round(y / gn.TILESIZE) ] && map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ]) ? map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ] : 0;
+        return (map.data[ Math.round(y / gn.TILESIZE) ] && map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ] > -1) ? map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ] : map.default;
     }
 }
 
