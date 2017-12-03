@@ -70,8 +70,7 @@ function Player() {
                 this.attackDelayed = false;
         }
 
-      this.velocity = (this.speed * gn.deltaModifier)  - ((scene.crystals * scene.crystals) * 0.035);
-
+      this.velocity = Math.abs((this.speed * gn.deltaModifier)  - ((scene.crystals * scene.crystals) * 0.025));
       if(this.potionEffect > 0) { 
           this.velocity = -this.velocity;
           this.potionEffect--;
@@ -80,23 +79,28 @@ function Player() {
       var tileID = map.getTile(Math.round(this.x-(this.image.width/2)), Math.round(this.y-(this.image.height/2)));
       var surrounding = map.getSurrounding(this.x, this.y);
       
+      var left = tile.get(surrounding.left).passable;
+      var up = tile.get(surrounding.up).passable;
+      var right = tile.get(surrounding.right).passable;
+      var down = tile.get(surrounding.down).passable;
+
       if(gn.keyboard.pressed[gn.keyboard.getValue('left')] || gn.keyboard.pressed[gn.keyboard.getValue('a')]) {
-        if(tile.get(surrounding.left).passable)
+        if(left || (this.potionEffect > 0 && right))
             this.x -= this.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('up')] || gn.keyboard.pressed[gn.keyboard.getValue('w')]) {
-        if(tile.get(surrounding.up).passable)
+        if(up || (this.potionEffect > 0 && down))
             this.y -= this.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('right')] || gn.keyboard.pressed[gn.keyboard.getValue('d')]) {
-        if(tile.get(surrounding.right).passable)
+        if(right || (this.potionEffect > 0 && left))
             this.x += this.velocity;
       }
 
       if(gn.keyboard.pressed[gn.keyboard.getValue('down')] || gn.keyboard.pressed[gn.keyboard.getValue('s')]) {
-        if(tile.get(surrounding.down).passable)
+        if(down || (this.potionEffect > 0 && up))
             this.y += this.velocity;
       }
     }

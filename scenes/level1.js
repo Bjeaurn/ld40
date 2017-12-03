@@ -38,6 +38,7 @@ map.data = [[0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
            ];
 
 var scene = {};
+scene.levelComplete = false;
 scene.crystals = 0;
 scene.targetCrystals = 5;
 scene.addCrystal = function() {
@@ -107,6 +108,9 @@ scene.logic = function() {
 }
 
 scene.completeLevel = function() {
-    portals.forEach(portal => portal.delete());
-    gn.scene.load('level2');
+    if(!scene.levelComplete) {
+        scene.levelComplete = true;
+        portals.forEach(portal => portal.delete());
+        gn.scene.load('level2');
+    }
 }

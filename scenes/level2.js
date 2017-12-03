@@ -9,6 +9,10 @@ scene.targetCrystals = 6;
 gn.viewport.x = player.x;
 gn.viewport.y = player.y;
 
+scene.levelComplete = false;
+
+console.log('loading once?');
+
 map.default = 0;
 map.data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0],
@@ -82,7 +86,7 @@ var dropCoin = function(x, y) {
     if(tile.get(t).passable) {
         scene.coinsArr.push(new Coin(tX, tY));
     } else {
-        alert("Coin instantly added, dropped in unreachable spot. Sorry!");
+        new FastBanner("Coin instantly added, dropped in unreachable spot. Sorry!", 120);
         scene.addCoin();
     }
     if(!scene.seenCoin) {
@@ -98,7 +102,7 @@ var dropCrystal = function(x, y) {
     if(tile.get(t).passable) {
         new Crystal(tX, tY);
     } else {
-        alert("Crystal instantly added, dropped in unreachable spot. Sorry!");
+        new FastBanner("Crystal instantly added, dropped in unreachable spot. Sorry!", 120);
         scene.addCrystal();
     }
 }
@@ -150,6 +154,9 @@ scene.logic = function() {
 }
 
 scene.completeLevel = function() {
-    portals.forEach(portal => portal.delete());
-    gn.scene.load('level3');
+    if(!scene.levelComplete) {
+        scene.levelComplete = true;
+        portals.forEach(portal => portal.delete());
+        gn.scene.load('level3');
+    }
 }

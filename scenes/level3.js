@@ -1,6 +1,8 @@
 player.x = 635; 
 player.y = 480;
-
+if(player.coins<1) {
+    player.coins = 1;
+}
 Enemy.graceDistance = -100;
 
 scene = {};
@@ -63,8 +65,6 @@ scene.addPotion = function() {
     player.drinkPotion();
 }
 
-new Potion(13,14);
-
 new Morbi(707, 480);
 
 scene.coinsArr = [];
@@ -120,7 +120,7 @@ new Enemy(581, 141, noDrop);
 new Enemy(681, 141, dropCoin);
 
 new Enemy(133, 133, noDrop);
-new Enemy(316, 136, dropCoin);
+new Enemy(316, 136, noDrop);
 new Enemy(340, 170, dropCoin);
 
 new Enemy(142, 883, dropCoin);
@@ -177,7 +177,7 @@ scene.logic = function() {
         }, 1000);
 
         setTimeout(() => {
-            new Banner(['Thank you for playing!', 'Follow me on Twitter and on Twitch: @Bjeaurn'], 1000);
+            new Banner(['Thank you for playing!', 'Follow me on Twitter and on Twitch: @Bjeaurn'], 2000);
             player.canMove = true;            
             map.data[14][24] = 0;
             map.data[15][24] = 0;
