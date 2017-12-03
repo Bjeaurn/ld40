@@ -89,7 +89,7 @@ function Player() {
             // if(!this.attackDelayed) {
                 // if(this.bullets > 0) {
                 //     this.bullets = this.bullets - 1;
-                new Projectile(this.x+this.math.halfX, this.y+this.math.halfY, gn.mouse.x-gn.viewport.centerX+this.x+this.math.halfX, gn.mouse.y-gn.viewport.centerY+this.y+this.math.halfY, 1000, 800, 10, this.id, 0, 0, 1);
+                new Projectile(this.x+this.math.halfX, this.y+this.math.halfY, gn.mouse.x-gn.viewport.centerX+this.x, gn.mouse.y-gn.viewport.centerY+this.y, 1000, 800, 10, this.id, 0, 0, 1);
                 // this.attackDelayed = gn.now;
                 // }
             // }

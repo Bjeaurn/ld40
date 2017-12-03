@@ -10,7 +10,7 @@ gn.load = function() {
     gn.images.store('coin', 'coin.png');
     gn.images.store('portal', 'portal.png');
     gn.images.store('bullet', 'bullet.png');
-    
+    gn.images.store('spider', 'spider.png');
     // ### INITIALIZE VARIABLES ### //
     player = Player();
 

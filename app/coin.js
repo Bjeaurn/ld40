@@ -1,6 +1,6 @@
-function Coin(x, y) {
-    this.x = x * gn.TILESIZE + (gn.TILESIZE/2) - 8;
-    this.y = y * gn.TILESIZE + (gn.TILESIZE/2) - 8;
+function Coin(tileX, tileY) {
+    this.x = tileX * gn.TILESIZE + (gn.TILESIZE/2) - 8;
+    this.y = tileY * gn.TILESIZE + (gn.TILESIZE/2) - 8;
     this.image = gn.images.get('coin');
     this.maxBounce = 4;    
     this.bounceUp = true;    

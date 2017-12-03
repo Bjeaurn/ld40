@@ -98,7 +98,7 @@ Projectile.prototype.checkCollision = function() {
     var enemy;
     for(var i in Enemy.instances) {
         enemy = Enemy.instances[i];
-        if(Math.abs(enemy.x - this.x) < (gn.TILESIZE / 2) && Math.abs(enemy.y - this.y) < (gn.TILESIZE/2)) {
+        if(Math.abs(enemy.x + enemy.math.halfX - this.x) < (gn.TILESIZE / 2) && Math.abs(enemy.y + enemy.math.halfY - this.y) < (gn.TILESIZE/2)) {
             enemy.hurt(this.damage);
             this.delete();
         }

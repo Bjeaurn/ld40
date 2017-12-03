@@ -9,24 +9,22 @@ Enemy.moveAll = function() {
     }
 }
 
-Enemy.spawns = [
-    { x: -64, y: -64, open: false},
-    { x: -64, y: gn.canvas.oh-64, open: false},
-    { x: gn.canvas.ow+64, y: -64, open: false },
-    { x: gn.canvas.ow+64, y: gn.canvas.oh + 64, open: true }
-]
-
-function Enemy() {
+function Enemy(startX, startY, lootFn) {
     Enemy.id++;
-    this.id = "e"+Enemy.id;
-    this.spawn = Enemy.getRandomSpawn();
-    this.x = Math.round(Math.random() * 64) + this.spawn.x;
-    this.y = Math.round(Math.random() * 64) + this.spawn.y;
+    this.x = startX
+    this.y = startY;
     this.direction = 0;
-    this.speed = Math.floor(Math.random() * 20) + 50;
-    this.maxSpeed = Math.floor(Math.random() * 30) + 100;
+    this.speed = 50;
+    this.maxSpeed = 70;
+    this.image = gn.images.get('spider');
+    this.direction = 90;
+    this.lootFn = lootFn;
+        
+    this.math = {
+        halfX: this.image.width/2,
+        halfY: this.image.height/2
+    }
 
-    this.special = Math.floor(Math.random() * 10);
     if(this.special==0) {
         this.speed = this.speed * 2;
         this.maxSpeed = this.maxSpeed * 2;
@@ -35,7 +33,7 @@ function Enemy() {
     this.health = this.maxHealth = 30;
     this.attackDelay = false;
     this.attackDelayTime = Math.floor(Math.random() * 200) + 600;
-    entities.add(this);
+    this.id = entities.add(this);
 
     Enemy.instances.push(this);
 
@@ -44,7 +42,7 @@ function Enemy() {
         this.direction = Math.round(result * 180 / Math.PI) + 180;
     }
 
-    this.move = function() {
+    this.update = function() {
         this.setDirection();
         this.trajectory = {};
         this.trajectory.x = gn.round(player.x - this.x);
@@ -53,14 +51,21 @@ function Enemy() {
         this.trajectory.x = this.trajectory.x / length_of_vector;
         this.trajectory.y = this.trajectory.y / length_of_vector;
         this.velocity = {};
+        
         this.velocity.x = (this.trajectory.x * this.speed) * gn.deltaModifier;
         this.velocity.y = (this.trajectory.y * this.speed) * gn.deltaModifier;
 
         if(!this.velocity.x) this.velocity.x = 0;
         if(!this.velocity.y) this.velocity.y = 0;
 
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+        var correction = +gn.TILESIZE;
+        if(this.velocity.x <= 0 || this.velocity.y <= 0) { correction = -(gn.TILESIZE / 4); } else { correction = +(gn.TILESIZE); }
+
+        var tileID = map.getTile(Math.round(this.x-this.math.halfX+this.velocity.x+correction), Math.round(this.y-this.math.halfY+this.velocity.y+correction));
+        if(tile.get(tileID).passable) {
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+        }
 
         var dX = Math.round(Math.abs(player.x - this.x));
         var dY = Math.round(Math.abs(player.y - this.y));
@@ -76,19 +81,19 @@ function Enemy() {
 //        gn.handle.drawImage(gn.images.get('health'), 0, 0, gn.images.get('health').width, gn.images.get('health').height, this.x, this.y, 100, 16);
         if(this.image && this.x && this.y) {
             gn.handle.save();
-            gn.handle.translate(this.x, this.y);
+            gn.handle.translate(this.x-gn.viewport.x+gn.viewport.centerX+this.math.halfX, this.y-gn.viewport.y+gn.viewport.centerY+this.math.halfY);
             gn.handle.rotate(this.direction * TO_RADIANS);
             gn.handle.draw(this.image, -(this.image.width/2), -(this.image.height/2));
             gn.handle.restore();
         }
 
-        if(this.health < this.maxHealth) {
-            var width = Math.round((this.health / this.maxHealth) * health.width);
+        // if(this.health < this.maxHealth) {
+        //     var width = Math.round((this.health / this.maxHealth) * health.width);
 
-            gn.handle.globalAlpha = 0.4;
-            gn.handle.drawImage(health, 0, 0, width, health.height, this.x - 32, this.y - 30, width, health.height);
-            gn.handle.globalAlpha = 1;
-        }
+        //     gn.handle.globalAlpha = 0.4;
+        //     gn.handle.drawImage(health, 0, 0, width, health.height, this.x - 32, this.y - 30, width, health.height);
+        //     gn.handle.globalAlpha = 1;
+        // }
     }
 
     this.hurt = function(damage) {
@@ -114,10 +119,9 @@ function Enemy() {
         for(var i in Enemy.instances) {
             obj = Enemy.instances[i];
             if(obj.id == this.id) {
-                player.score += 1;
                 Enemy.instances.splice(i, 1);
                 entities.remove(this.id);
-                Enemy.checkWave();
+                this.lootFn(this.x, this.y);
                 return;
             }
         }
