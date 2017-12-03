@@ -46,6 +46,8 @@ scene.addCoin = function() {
     }
 }
 
+new Banner('Test!', 600);
+
 // new Coin(8, 14);  good spot for an enemy
 var coins = [
     new Coin(7, 9),
@@ -74,6 +76,7 @@ scene.draw = function() {
     entities.drawAll();
     player.setDirection();
     player.draw();
+    Banners.drawAll();
     gn.handle.text('Coins: '+scene.coins, 5, 60);
 }
 

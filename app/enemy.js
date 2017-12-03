@@ -9,6 +9,8 @@ Enemy.moveAll = function() {
     }
 }
 
+Enemy.graceDistance = 250;
+
 function Enemy(startX, startY, lootFn) {
     Enemy.id++;
     this.x = startX
@@ -43,38 +45,40 @@ function Enemy(startX, startY, lootFn) {
     }
 
     this.update = function() {
-        this.setDirection();
-        this.trajectory = {};
-        this.trajectory.x = gn.round(player.x - this.x);
-        this.trajectory.y = gn.round(player.y - this.y);
-        var length_of_vector = Math.sqrt((this.trajectory.x * this.trajectory.x) + (this.trajectory.y * this.trajectory.y));
-        this.trajectory.x = this.trajectory.x / length_of_vector;
-        this.trajectory.y = this.trajectory.y / length_of_vector;
-        this.velocity = {};
-        
-        this.velocity.x = (this.trajectory.x * this.speed) * gn.deltaModifier;
-        this.velocity.y = (this.trajectory.y * this.speed) * gn.deltaModifier;
+        if(Math.abs(this.x - player.x) < Enemy.graceDistance && Math.abs(this.y - player.y) < Enemy.graceDistance) {
+            this.setDirection();
+            this.trajectory = {};
+            this.trajectory.x = gn.round(player.x - this.x);
+            this.trajectory.y = gn.round(player.y - this.y);
+            var length_of_vector = Math.sqrt((this.trajectory.x * this.trajectory.x) + (this.trajectory.y * this.trajectory.y));
+            this.trajectory.x = this.trajectory.x / length_of_vector;
+            this.trajectory.y = this.trajectory.y / length_of_vector;
+            this.velocity = {};
+            
+            this.velocity.x = (this.trajectory.x * this.speed) * gn.deltaModifier;
+            this.velocity.y = (this.trajectory.y * this.speed) * gn.deltaModifier;
 
-        if(!this.velocity.x) this.velocity.x = 0;
-        if(!this.velocity.y) this.velocity.y = 0;
+            if(!this.velocity.x) this.velocity.x = 0;
+            if(!this.velocity.y) this.velocity.y = 0;
 
-        var correction = +gn.TILESIZE;
-        if(this.velocity.x <= 0 || this.velocity.y <= 0) { correction = -(gn.TILESIZE / 4); } else { correction = +(gn.TILESIZE); }
+            var correction = +gn.TILESIZE;
+            if(this.velocity.x <= 0 || this.velocity.y <= 0) { correction = -(gn.TILESIZE / 4); } else { correction = +(gn.TILESIZE); }
 
-        var tileID = map.getTile(Math.round(this.x-this.math.halfX+this.velocity.x+correction), Math.round(this.y-this.math.halfY+this.velocity.y+correction));
-        if(tile.get(tileID).passable) {
-            this.x += this.velocity.x;
-            this.y += this.velocity.y;
+            var tileID = map.getTile(Math.round(this.x-this.math.halfX+this.velocity.x+correction), Math.round(this.y-this.math.halfY+this.velocity.y+correction));
+            if(tile.get(tileID).passable) {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+            }
+
+            var dX = Math.round(Math.abs(player.x - this.x));
+            var dY = Math.round(Math.abs(player.y - this.y));
+            if(dX < 100 && dY < 100) {
+                this.speed += 1;
+                if(this.speed > this.maxSpeed) this.speed = this.maxSpeed;
+            }
+
+            this.attack();
         }
-
-        var dX = Math.round(Math.abs(player.x - this.x));
-        var dY = Math.round(Math.abs(player.y - this.y));
-        if(dX < 100 && dY < 100) {
-            this.speed += 1;
-            if(this.speed > this.maxSpeed) this.speed = this.maxSpeed;
-        }
-
-        this.attack();
     }
 
     this.draw = function() {

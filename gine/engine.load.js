@@ -12,6 +12,7 @@ gn.load = function() {
     gn.images.store('portal-off', 'portal-off.png');
     gn.images.store('bullet', 'bullet.png');
     gn.images.store('spider', 'spider.png');
+    gn.images.store('banner', 'banner.png');
     // ### INITIALIZE VARIABLES ### //
     player = Player();
 
