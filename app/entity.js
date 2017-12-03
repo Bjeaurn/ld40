@@ -2,10 +2,12 @@ var entity = {};
 
 var entities = {};
 entities.array = [];
+entities.uid = 0;
 
 entities.add = function(object) {
     entities.array.push(object);
-    return entities.array.length;
+    entities.uid++;
+    return entities.uid;
 }
 
 entities.remove = function(id) {

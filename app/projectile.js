@@ -53,6 +53,7 @@ function Projectile(startX, startY, endX, endY, distance, speed, damage, owner, 
             this.velocity.y = (this.trajectory.y * this.speed);
             this.flight_time = this.distance / this.speed;
         }
+        
         this.flight_time -= (gn.deltaModifier);
         this.y = this.y + this.velocity.y * gn.deltaModifier;
         this.x = this.x + this.velocity.x * gn.deltaModifier;
@@ -94,10 +95,6 @@ Projectile.prototype.delete = function() {
 }
 
 Projectile.prototype.checkCollision = function() {
-    var tileID = map.getTile(this.x-(this.image.width/2), this.y-(this.image.height/2));
-    if(!tile.get(tileID).passable) {
-       this.delete();
-    }
     var enemy;
     for(var i in Enemy.instances) {
         enemy = Enemy.instances[i];
@@ -105,6 +102,10 @@ Projectile.prototype.checkCollision = function() {
             enemy.hurt(this.damage);
             this.delete();
         }
+    }
+    var tileID = map.getTile(this.x-(this.image.width/2), this.y-(this.image.height/2));
+    if(!tile.get(tileID).passable) {
+       this.delete();
     }
 
     // var box;
@@ -145,7 +146,6 @@ Projectile.prototype.checkEnvironment = function() {
 	    }
     }
 }
-
 Projectile.prototype.draw = function() {
-    gn.handle.draw(this.image, this.x-(this.image.width/2), this.y-(this.image.height/2));
+    gn.handle.draw(this.image, this.x-(this.image.width/2)-gn.viewport.x+gn.viewport.centerX, this.y-(this.image.height/2)-gn.viewport.y+gn.viewport.centerY);
 }

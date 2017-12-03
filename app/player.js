@@ -82,16 +82,14 @@ function Player() {
         if(tile.get(surrounding.down).passable)
             this.y += this.velocity;
       }
-
     }
 
     this.attack = function() {
-        console.log('attacking');
         if(this.dead) { return; } else {
             // if(!this.attackDelayed) {
                 // if(this.bullets > 0) {
                 //     this.bullets = this.bullets - 1;
-                new Projectile(gn.viewport.centerX+this.math.halfX, gn.viewport.centerY+this.math.halfY, gn.mouse.x, gn.mouse.y, 1000, 800, 10, this.id, 0, 0, 1);
+                new Projectile(this.x+this.math.halfX, this.y+this.math.halfY, gn.mouse.x-gn.viewport.centerX+this.x+this.math.halfX, gn.mouse.y-gn.viewport.centerY+this.y+this.math.halfY, 1000, 800, 10, this.id, 0, 0, 1);
                 // this.attackDelayed = gn.now;
                 // }
             // }

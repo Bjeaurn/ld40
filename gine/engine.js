@@ -70,7 +70,7 @@ gn.draw = function() {
 
 gn.round = function (number, decimals) {
     if(decimals>0) {
-        return number.toFixed(decimals);
+        return +number.toFixed(decimals);
     }
     return ~~ (0.5 + number);
     //return Math.round(number);
