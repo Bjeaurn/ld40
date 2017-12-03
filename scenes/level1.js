@@ -36,27 +36,30 @@ map.data = [[0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
            ];
 
 var scene = {};
-scene.coins = 0;
-scene.targetCoins = 5;
-scene.addCoin = function() {
-    scene.coins++;
+scene.crystals = 0;
+scene.targetCrystals = 5;
+scene.addCrystal = function() {
+    scene.crystals++;
+
+    if(scene.crystals === scene.targetCrystals-2) {
+        new Banner('Those crystals are heavy... It seems that they slow you down!', 300);
+    }
     
-    if(scene.coins >= scene.targetCoins) {
+    if(scene.crystals >= scene.targetCrystals) {
         portals.forEach(portal => portal.toggle());
     }
 }
 
-new Banner('Test!', 600);
-
+new Banner(['Oh no! You\'re stuck in this mine...', 'Gather 5 crystals to enable the portal out of here!'], 300);
+new Banner(['Use WSAD to move', 'Click to shoot!'], 300);
 // new Coin(8, 14);  good spot for an enemy
-var coins = [
-    new Coin(7, 9),
-    new Coin(11, 15),
-    new Coin(19, 5.5)
+var crystals = [
+    new Crystal(7, 9),
+    new Crystal(11, 15),
+    new Crystal(19, 5.5)
 ];
 
 var portals = [
-    new Portal(14, 2),
     new Portal(15, 2),
     new Portal(16, 2),
     new Portal(14, 3),
@@ -64,12 +67,12 @@ var portals = [
     new Portal(16, 3)
 ]
 
-dropCoin = function(x, y) {
-    coins.push(new Coin(gn.round(x / gn.TILESIZE), gn.round(y / gn.TILESIZE)));
+dropCrystal = function(x, y) {
+    crystals.push(new Crystal(gn.round(x / gn.TILESIZE), gn.round(y / gn.TILESIZE)));
 }
 
-new Enemy(45, 170, dropCoin);
-new Enemy(943, 440, dropCoin);
+new Enemy(45, 170, dropCrystal);
+new Enemy(943, 440, dropCrystal);
 
 scene.draw = function() {
     map.draw();
@@ -77,7 +80,6 @@ scene.draw = function() {
     player.setDirection();
     player.draw();
     Banners.drawAll();
-    gn.handle.text('Coins: '+scene.coins, 5, 60);
 }
 
 scene.tick = function () {
@@ -92,7 +94,7 @@ scene.tick = function () {
 
 scene.logic = function() {
     // Scene specific stuff.
-    if (scene.coins >= scene.targetCoins) {
+    if (scene.crystals >= scene.targetCrystals) {
         portals.forEach( portal => {
             if(portal.touchingAPortal()) {
                 gn.scene.load('level2');

@@ -32,8 +32,8 @@ function Player() {
             gn.handle.draw(this.curImage, -(this.math.halfX), -(this.math.halfY));
             gn.handle.restore();
 
-            // gn.handle.text('X: '+gn.round(this.x, 2)+', Y: '+gn.round(this.y,2), 5, 20);
-            // gn.handle.text('tX: '+gn.round(this.x/gn.TILESIZE)+', Y: '+gn.round(this.y/gn.TILESIZE), 5, 40);
+            gn.handle.text('X: '+gn.round(this.x, 2)+', Y: '+gn.round(this.y,2), 5, 20);
+            gn.handle.text('tX: '+gn.round(this.x/gn.TILESIZE)+', Y: '+gn.round(this.y/gn.TILESIZE), 5, 40);
         
         }
         gn.handle.globalAlpha = 1;
@@ -57,7 +57,7 @@ function Player() {
                 this.attackDelayed = false;
         }
 
-      this.velocity = (this.speed * gn.deltaModifier)  - ((scene.coins * scene.coins) * 0.035);
+      this.velocity = (this.speed * gn.deltaModifier)  - ((scene.crystals * scene.crystals) * 0.035);
 
       var tileID = map.getTile(Math.round(this.x-(this.image.width/2)), Math.round(this.y-(this.image.height/2)));
       var surrounding = map.getSurrounding(this.x, this.y);

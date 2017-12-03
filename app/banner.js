@@ -1,4 +1,4 @@
-var Banners = {};
+    var Banners = {};
 
 Banners.instances = [];
 
@@ -8,7 +8,9 @@ Banners.add = function(obj) {
 }
 
 Banners.drawAll = function() {
-    Banners.instances.forEach(banner => banner.draw())
+    if(Banners.instances.length > 0) {
+        Banners.instances[0].draw();
+    }
 }
 
 function Banner(text, duration) {
@@ -22,7 +24,7 @@ function Banner(text, duration) {
     this.showText = false;
     this.closing = false;
 
-    this.id = Banners.add(this);
+    Banners.add(this);
 
     this.draw = function() {
         gn.handle.draw(this.backgroundImage, this.x, this.y+this.extraY);
@@ -32,8 +34,16 @@ function Banner(text, duration) {
             this.showText = true;
         }
 
-        if(this.showText === true) {               
-            gn.handle.text(this.text + ' ('+this.duration+')', this.x + 25, this.y + 75 + this.extraY, '16px Helvetica', '0,0,0', this.fade);
+        if(this.showText === true) {
+            if(this.text.constructor === Array) {
+                this.text.forEach(
+                    (t, i) => {
+                        gn.handle.text(t, this.x + 25, this.y + 75 + this.extraY + (i*20), '16px Helvetica', '0,0,0', this.fade);
+                    }
+                )
+            }  else { 
+                gn.handle.text(this.text, this.x + 25, this.y + 75 + this.extraY, '16px Helvetica', '0,0,0', this.fade);
+            }
             if(this.fade < 1 && !this.closing)
                 this.fade += 0.05;
         }
@@ -47,9 +57,10 @@ function Banner(text, duration) {
 
             if(this.extraY === 120) { this.remove(); }
         }
+        gn.handle.resetColor();
     }
 
     this.remove = function() {
-
+        Banners.instances.splice(0, 1);
     }
 }

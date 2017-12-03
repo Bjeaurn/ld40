@@ -45,7 +45,7 @@ function Enemy(startX, startY, lootFn) {
     }
 
     this.update = function() {
-        if(Math.abs(this.x - player.x) < Enemy.graceDistance && Math.abs(this.y - player.y) < Enemy.graceDistance) {
+        if(Math.abs(this.x - player.x) < Enemy.graceDistance + (scene.coins * 50) && Math.abs(this.y - player.y) < Enemy.graceDistance + (scene.coins * 50)) {
             this.setDirection();
             this.trajectory = {};
             this.trajectory.x = gn.round(player.x - this.x);

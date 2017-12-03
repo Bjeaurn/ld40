@@ -42,6 +42,8 @@ map.draw = function() {
     }
 }
 
+map.logged = false;
+
 map.getTile = function(x, y) {
     if(map.data) {
         return (map.data[ Math.round(y / gn.TILESIZE) ] && map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ]) ? map.data[ Math.round(y / gn.TILESIZE) ][ Math.round(x / gn.TILESIZE) ] : 0;
