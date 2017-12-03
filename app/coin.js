@@ -13,7 +13,7 @@ function Coin(tileX, tileY) {
 
     this.update = function() {
         if (this.isTouching()) {
-            player.hasCoins++;
+            scene.addCoin();
             this.delete();
         }
         this.bounce();

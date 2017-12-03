@@ -7,13 +7,12 @@ Player.prototype.constructor = Player;
 function Player() {
     this.x = 479;
     this.y = 738;
-    this.speed = 90;
+    this.speed = 95;
     this.velocity = 0;
     this.image = gn.images.get('player');
     this.direction = 0;
     this.health = 100;
     this.isHurt = false;
-    this.hasCoins = 0;
     
     this.math = {
        halfX: this.image.width/2,
@@ -33,9 +32,9 @@ function Player() {
             gn.handle.draw(this.curImage, -(this.math.halfX), -(this.math.halfY));
             gn.handle.restore();
 
-            gn.handle.text('X: '+gn.round(this.x, 2)+', Y: '+gn.round(this.y,2), 5, 20);
-            gn.handle.text('tX: '+gn.round(this.x/gn.TILESIZE)+', Y: '+gn.round(this.y/gn.TILESIZE), 5, 40);
-            gn.handle.text('Coins: '+this.hasCoins, 5, 60);
+            // gn.handle.text('X: '+gn.round(this.x, 2)+', Y: '+gn.round(this.y,2), 5, 20);
+            // gn.handle.text('tX: '+gn.round(this.x/gn.TILESIZE)+', Y: '+gn.round(this.y/gn.TILESIZE), 5, 40);
+        
         }
         gn.handle.globalAlpha = 1;
 
@@ -58,7 +57,7 @@ function Player() {
                 this.attackDelayed = false;
         }
 
-      this.velocity = (this.speed * gn.deltaModifier)  - ((this.hasCoins * this.hasCoins) * 0.035);
+      this.velocity = (this.speed * gn.deltaModifier)  - ((scene.coins * scene.coins) * 0.035);
 
       var tileID = map.getTile(Math.round(this.x-(this.image.width/2)), Math.round(this.y-(this.image.height/2)));
       var surrounding = map.getSurrounding(this.x, this.y);

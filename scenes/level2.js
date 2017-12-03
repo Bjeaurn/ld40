@@ -1,3 +1,10 @@
+player.x = 300; 
+player.y = 700;
+player.coins = 0;
+
+scene = {};
+scene.coins = 0;
+
 gn.viewport.x = player.x;
 gn.viewport.y = player.y;
 

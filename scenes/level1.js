@@ -35,6 +35,17 @@ map.data = [[0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
 
            ];
 
+var scene = {};
+scene.coins = 0;
+scene.targetCoins = 5;
+scene.addCoin = function() {
+    scene.coins++;
+    
+    if(scene.coins >= scene.targetCoins) {
+        portals.forEach(portal => portal.toggle());
+    }
+}
+
 // new Coin(8, 14);  good spot for an enemy
 var coins = [
     new Coin(7, 9),
@@ -52,8 +63,6 @@ var portals = [
 ]
 
 dropCoin = function(x, y) {
-    console.log('Dropping coin ', x, y);
-    console.log(coins);
     coins.push(new Coin(gn.round(x / gn.TILESIZE), gn.round(y / gn.TILESIZE)));
 }
 
@@ -65,6 +74,7 @@ scene.draw = function() {
     entities.drawAll();
     player.setDirection();
     player.draw();
+    gn.handle.text('Coins: '+scene.coins, 5, 60);
 }
 
 scene.tick = function () {
@@ -79,7 +89,7 @@ scene.tick = function () {
 
 scene.logic = function() {
     // Scene specific stuff.
-    if (player.hasCoins >= 5) {
+    if (scene.coins >= scene.targetCoins) {
         portals.forEach( portal => {
             if(portal.touchingAPortal()) {
                 gn.scene.load('level2');
